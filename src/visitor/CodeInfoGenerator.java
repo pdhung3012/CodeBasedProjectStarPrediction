@@ -27,7 +27,7 @@ import utils.FileIO;
 import utils.FileUtil;
 import utils.StanfordLemmatizer;
 
-public class AbbrevSequenceGenerator {
+public class CodeInfoGenerator {
 
 private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = false;
 	
@@ -43,7 +43,7 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 //	private String[] arrPrefix;
 //	private StanfordLemmatizer lemm;
 	
-	public AbbrevSequenceGenerator(String inPath) {
+	public CodeInfoGenerator(String inPath) {
 		this.inPath = inPath;
 //		this.arrPrefix=arrPrefix;
 //		this.lemm=lemm;
@@ -279,7 +279,7 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 //		System.out.println("size "+td.getMethods().length);
 		for (MethodDeclaration method : td.getMethods()) {
 			stLog.println(path + "\t" + name + "\t" + method.getName().getIdentifier() + "\t" + getParameters(method));
-			ExtractAbbreviationVisitor sg = new ExtractAbbreviationVisitor();
+			CodeInfoVisitor sg = new CodeInfoVisitor();
 //			sg.setSetFields(setFieldsForTD);
 //			sg.setArrLibrariesPrefix(this.arrPrefix);
 			sg.setFopInvocationObject(fopInvocationObject);
@@ -615,7 +615,7 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 		sb.append("(");
 		for (int i = 0; i < method.parameters().size(); i++) {
 			SingleVariableDeclaration d = (SingleVariableDeclaration) (method.parameters().get(i));
-			String type = ExtractAbbreviationVisitor.getUnresolvedType(d.getType());
+			String type = CodeInfoVisitor.getUnresolvedType(d.getType());
 			sb.append("\t" + type);
 		}
 		sb.append("\t)");

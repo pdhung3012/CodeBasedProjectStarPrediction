@@ -19,7 +19,7 @@ import constanct.PathConstanct;
 //import invocations.MethodEncoderVisitor;
 import utils.JavaASTUtil;
 
-public class ExtractAbbreviationVisitor extends ASTVisitor {
+public class CodeInfoVisitor extends ASTVisitor {
 	/**
 	 * Internal synonym for {@link AST#JLS2}. Use to alleviate
 	 * deprecation warnings.
@@ -97,7 +97,7 @@ public class ExtractAbbreviationVisitor extends ASTVisitor {
 	/**
 	 * Creates a new AST printer.
 	 */
-	public ExtractAbbreviationVisitor() {
+	public CodeInfoVisitor() {
 		this.sbCodeTokens = new StringBuilder();
 		this.sbAbbrevTokens=new StringBuilder();
 		this.sbTargetTokens=new StringBuilder();

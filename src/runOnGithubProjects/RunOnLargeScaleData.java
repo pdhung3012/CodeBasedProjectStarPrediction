@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import utils.FileIO;
 import utils.FileUtil;
 import utils.StanfordLemmatizer;
-import visitor.AbbrevSequenceGenerator;
+import visitor.CodeInfoGenerator;
 import constanct.PathConstanct;
 
 public class RunOnLargeScaleData {
@@ -17,8 +17,8 @@ public class RunOnLargeScaleData {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String inputProjectPath = PathConstanct.PATH_INPUT_ABBREV_PROJECT;
-		String outputProjectPath = PathConstanct.PATH_OUTPUT_ABBREV_PROJECT;
+		String inputProjectPath = PathConstanct.PATH_INPUT_PROJECTS;
+		String outputProjectPath = PathConstanct.PATH_OUTPUT_TEXT;
 		String fpOutputLog=outputProjectPath+File.separator+"alog.txt";
 		ExecutorService executor = Executors.newFixedThreadPool(MYTHREADS);
 //		StanfordLemmatizer lemm=new StanfordLemmatizer();
@@ -74,7 +74,7 @@ class ExtractSequenceForProjectRunnable implements Runnable {
 				System.out.println(index+"\tAlready for " + outputPath);
 				FileIO.appendStringToFile(index+"\t"+fIn.getName()+"\tDownloaded\n", logPath);
 			} else{
-				AbbrevSequenceGenerator mcsg = new AbbrevSequenceGenerator(
+				CodeInfoGenerator mcsg = new CodeInfoGenerator(
 						inputPath);
 				mcsg.generateSequences(outputPath);
 //				mcsg.generateAlignment(true);

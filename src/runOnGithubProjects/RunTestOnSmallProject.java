@@ -1,21 +1,18 @@
 package runOnGithubProjects;
 
+import constanct.PathConstanct;
 import utils.StanfordLemmatizer;
-import visitor.AbbrevSequenceGenerator;
+import visitor.CodeInfoGenerator;
 
 public class RunTestOnSmallProject {
 
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-//		String inPath="/Users/hungphan/Documents/workspace/SampleMethodInvocationProject/";
-//		String outPath="/Users/hungphan/git/NLPLTranslation/sequences/SampleMethodInvocationProject/";
-//		String inPath="/Users/hungphan/git/pig/";
-//		String outPath="/Users/hungphan/git/NLPLTranslation/sequences/pig/";		
-		String inPath="/Users/hungphan/Documents/workspace/TestExpInference/";
-		String outPath="/Users/hungphan/git/dataDoesNMTOutperformSMT/textSequence/";
+		// TODO Auto-generated method stub	
+		String inPath=PathConstanct.PATH_INPUT_PRO_LOCAL;
+		String outPath=PathConstanct.PATH_OUTPUT_PRO_LOCAL;
 //		StanfordLemmatizer lemm=new StanfordLemmatizer();
-		AbbrevSequenceGenerator mcsg=new AbbrevSequenceGenerator(inPath);
+		CodeInfoGenerator mcsg=new CodeInfoGenerator(inPath);
 		mcsg.generateSequences(outPath);
 		mcsg.generateAlignment(true);
 	}

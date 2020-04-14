@@ -14,7 +14,7 @@ public class RunTestOnSmallProject {
 //		StanfordLemmatizer lemm=new StanfordLemmatizer();
 		CodeInfoGenerator mcsg=new CodeInfoGenerator(inPath,PathConstanct.NumberOfDocsExtracted);
 		mcsg.generateSequences(outPath);
-		mcsg.generateAlignment(true);
+//		mcsg.generateAlignment(true);
 	}
 
 }

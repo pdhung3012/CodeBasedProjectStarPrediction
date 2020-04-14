@@ -105,15 +105,20 @@ public class CodeInfoVisitor extends ASTVisitor {
 	
 	public void buildAbbrevAndTargetTokens() {
 		String[] arrCodeToken=this.sbCodeTokens.toString().replaceAll( "\n", " ").trim().split( "\\s+");
+		
+//		avoid empty method
 		if(arrCodeToken.length>=1 && arrCodeToken[0].equals( "{") && arrCodeToken[arrCodeToken.length-1].equals( "}")) {
 			for(int i=1;i<arrCodeToken.length-1;i++) {
 				if(!arrCodeToken[i].trim().isEmpty()) {
 					String item=arrCodeToken[i].trim();
-					String abbrev=item.substring(0, numberOfAbbreviation);
-					sbAbbrevTokens.append(abbrev+" ");
+//					String abbrev=item.substring(0, numberOfAbbreviation);
+//					sbAbbrevTokens.append(abbrev+" ");
 					sbTargetTokens.append(item+" ");
 				}
 			}
+			
+			
+			
 		}
 		
 		
@@ -422,6 +427,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 * @see ASTVisitor#visit(MethodDeclaration)
 	 */
 	public boolean visit(MethodDeclaration node) {
+		this.sbAbbrevTokens=new StringBuilder();
 		this.sbCodeTokens=new StringBuilder();
 		if (node.getBody() != null) {
 			node.getBody().accept(this);
@@ -447,6 +453,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			d.accept(this);
 		}
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("AnnotationTypeDeclaration ");
 		return false;
 	}
 
@@ -469,6 +476,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			node.getDefault().accept(this);
 		}
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("AnnotationTypeMemberDeclaration ");
 		return false;
 	}
 
@@ -485,6 +493,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.indent--;
 		printIndent();
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("AnonymousClassDeclaration ");
 		return false;
 	}
 
@@ -496,6 +505,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "[");//$NON-NLS-1$
 		node.getIndex().accept(this);
 		this.sbCodeTokens.append( "]");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ArrayAccess ");
 		return false;
 	}
 
@@ -522,6 +532,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		if (node.getInitializer() != null) {
 			node.getInitializer().accept(this);
 		}
+		this.sbAbbrevTokens.append("ArrayCreation ");
 		return false;
 	}
 
@@ -538,6 +549,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( "}");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ArrayInitializer ");
 		return false;
 	}
 
@@ -557,6 +569,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				aDimension.accept(this);
 			}
 		}
+		this.sbAbbrevTokens.append("ArrayType ");
 		return false;
 	}
 
@@ -572,6 +585,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			node.getMessage().accept(this);
 		}
 		this.sbCodeTokens.append( "  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("AssertStatement ");
 		return false;
 	}
 
@@ -582,6 +596,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getLeftHandSide().accept(this);
 		this.sbCodeTokens.append( " "+node.getOperator().toString()+" ");
 		node.getRightHandSide().accept(this);
+		this.sbAbbrevTokens.append("Assignment ");
 		return false;
 	}
 
@@ -598,6 +613,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.indent--;
 		printIndent();
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("Block ");
 		return false;
 	}
 
@@ -608,6 +624,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(BlockComment node) {
 		printIndent();
 		this.sbCodeTokens.append( "/* */");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("BlockComment ");
 		return false;
 	}
 
@@ -620,6 +637,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		} else {
 			this.sbCodeTokens.append( "false");//$NON-NLS-1$
 		}
+		this.sbAbbrevTokens.append("BooleanLiteral ");
 		return false;
 	}
 
@@ -634,6 +652,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			node.getLabel().accept(this);
 		}
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("BreakStatement ");
 		return false;
 	}
 
@@ -645,6 +664,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getType().accept(this);
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
 		node.getExpression().accept(this);
+		this.sbAbbrevTokens.append("CastExpression ");
 		return false;
 	}
 
@@ -656,6 +676,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getException().accept(this);
 		this.sbCodeTokens.append( " ) ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("CatchClause ");
 		return false;
 	}
 
@@ -664,6 +685,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(CharacterLiteral node) {
 		this.sbCodeTokens.append(node.getEscapedValue());
+		this.sbAbbrevTokens.append("CharacterLiteral ");
 		return false;
 	}
 
@@ -705,6 +727,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		if (node.getAnonymousClassDeclaration() != null) {
 			node.getAnonymousClassDeclaration().accept(this);
 		}
+		this.sbAbbrevTokens.append("ClassInstanceCreation ");
 		return false;
 	}
 
@@ -723,6 +746,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			AbstractTypeDeclaration d = (AbstractTypeDeclaration) it.next();
 			d.accept(this);
 		}
+		this.sbAbbrevTokens.append("CompilationUnit ");
 		return false;
 	}
 
@@ -735,6 +759,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getThenExpression().accept(this);
 		this.sbCodeTokens.append( " : ");//$NON-NLS-1$
 		node.getElseExpression().accept(this);
+		this.sbAbbrevTokens.append("ConditionalExpression ");
 		return false;
 	}
 
@@ -765,6 +790,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( " )  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ConstructorInvocation ");
 		return false;
 	}
 
@@ -779,6 +805,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			node.getLabel().accept(this);
 		}
 		this.sbCodeTokens.append( "  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ContinueStatement ");
 		return false;
 	}
 	
@@ -791,6 +818,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getType().accept(this);
 		visitReferenceTypeArguments(node.typeArguments());
 		this.sbCodeTokens.append( "new");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("CreationReference ");
 		return false;
 	}
 
@@ -800,6 +828,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append(' ');
 		visitAnnotationsList(annotations);
 		this.sbCodeTokens.append( "[]"); //$NON-NLS-1$
+		this.sbAbbrevTokens.append("Dimension ");
 		return false;
 	}
 
@@ -813,6 +842,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( " while ( ");//$NON-NLS-1$
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( ")  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("DoStatement ");
 		return false;
 	}
 
@@ -822,6 +852,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(EmptyStatement node) {
 		printIndent();
 		this.sbCodeTokens.append( "  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("EmptyStatement ");
 		return false;
 	}
 
@@ -837,6 +868,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( " ) ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("EnhancedForStatement ");
 		return false;
 	}
 
@@ -865,6 +897,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		if (node.getAnonymousClassDeclaration() != null) {
 			node.getAnonymousClassDeclaration().accept(this);
 		}
+		this.sbAbbrevTokens.append("EnumConstantDeclaration ");
 		return false;
 	}
 
@@ -911,6 +944,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("EnumDeclaration ");
 		return false;
 	}
 
@@ -923,6 +957,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getExpression().accept(this);
 		visitReferenceTypeArguments(node.typeArguments());
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("ExpressionMethodReference ");
 		return false;
 	}	
 
@@ -933,6 +968,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		printIndent();
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( "  ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ExpressionStatement ");
 		return false;
 	}
 
@@ -943,6 +979,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( " . ");//$NON-NLS-1$
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("FieldAccess ");
 		return false;
 	}
 
@@ -968,8 +1005,9 @@ public class CodeInfoVisitor extends ASTVisitor {
 			if (it.hasNext()) {
 				this.sbCodeTokens.append( ", ");//$NON-NLS-1$
 			}
-		}
+		}		
 		this.sbCodeTokens.append( " ; \n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("FieldDeclaration ");
 		return false;
 	}
 
@@ -996,6 +1034,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		}
 		this.sbCodeTokens.append( ") ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("ForStatement ");
 		return false;
 	}
 
@@ -1012,6 +1051,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( " else ");//$NON-NLS-1$
 			node.getElseStatement().accept(this);
 		}
+		this.sbAbbrevTokens.append("IfStatement ");
 		return false;
 	}
 
@@ -1031,6 +1071,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( ".*");//$NON-NLS-1$
 		}
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ImportDeclaration ");
 		return false;
 	}
 
@@ -1052,6 +1093,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				e.accept(this);
 			}
 		}
+		this.sbAbbrevTokens.append("InfixExpression ");
 		return false;
 	}
 
@@ -1069,6 +1111,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			printModifiers(node.modifiers());
 		}
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("Initializer ");
 		return false;
 	}
 
@@ -1079,6 +1122,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getLeftOperand().accept(this);
 		this.sbCodeTokens.append( " instanceof ");//$NON-NLS-1$
 		node.getRightOperand().accept(this);
+		this.sbAbbrevTokens.append("InstanceofExpression ");
 		return false;
 	}
 
@@ -1094,6 +1138,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				this.sbCodeTokens.append( " & "); //$NON-NLS-1$
 			}
 		}
+		this.sbAbbrevTokens.append("IntersectionType ");
 		return false;
 	}
 
@@ -1108,6 +1153,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			e.accept(this);
 		}
 		this.sbCodeTokens.append( "\n */\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("Javadoc ");
 		return false;
 	}
 
@@ -1119,6 +1165,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getLabel().accept(this);
 		this.sbCodeTokens.append( ": ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("LabeledStatement ");
 		return false;
 	}
 
@@ -1140,6 +1187,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append(" ) ");
 		this.sbCodeTokens.append( " -> "); //$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("LambdaExpression ");
 		return false;
 	}
 
@@ -1159,6 +1207,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(MarkerAnnotation node) {
 		this.sbCodeTokens.append( "@");//$NON-NLS-1$
 		node.getTypeName().accept(this);
+		this.sbAbbrevTokens.append("MarkerAnnotation ");
 		return false;
 	}
 
@@ -1172,6 +1221,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		}
 		this.sbCodeTokens.append( "#");//$NON-NLS-1$
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("MemberRef ");
 		return false;
 	}
 
@@ -1183,6 +1233,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getName().accept(this);
 		this.sbCodeTokens.append( "=");//$NON-NLS-1$
 		node.getValue().accept(this);
+		this.sbAbbrevTokens.append("MemberValuePair ");
 		return false;
 	}
 
@@ -1219,6 +1270,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( " ) ");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("MethodInvocation ");
 		return false;
 	}
 
@@ -1241,6 +1293,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("MethodRef ");
 		return false;
 	}
 
@@ -1259,6 +1312,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( " ");//$NON-NLS-1$
 			node.getName().accept(this);
 		}
+		this.sbAbbrevTokens.append("MethodRefParameter ");
 		return false;
 	}
 
@@ -1268,6 +1322,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(Modifier node) {
 		this.sbCodeTokens.append(node.getKeyword().toString());
+		this.sbAbbrevTokens.append("Modifier ");
 		return false;
 	}
 
@@ -1280,6 +1335,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append('.');
 		visitTypeAnnotations(node);
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("NameQualifiedType ");
 		return false;
 	}
 
@@ -1299,6 +1355,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("NormalAnnotation ");
 		return false;
 	}
 
@@ -1307,6 +1364,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(NullLiteral node) {
 		this.sbCodeTokens.append( "null");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("NullLiteral ");
 		return false;
 	}
 
@@ -1315,6 +1373,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(NumberLiteral node) {
 		this.sbCodeTokens.append(node.getToken());
+		this.sbAbbrevTokens.append("NumberLiteral ");
 		return false;
 	}
 
@@ -1336,6 +1395,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "package ");//$NON-NLS-1$
 		node.getName().accept(this);
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("PackageDeclaration ");
 		return false;
 	}
 
@@ -1354,6 +1414,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( ">");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ParameterizedType ");
 		return false;
 	}
 
@@ -1364,6 +1425,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "( ");//$NON-NLS-1$
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ParenthesizedExpression ");
 		return false;
 	}
 
@@ -1373,6 +1435,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(PostfixExpression node) {
 		node.getOperand().accept(this);
 		this.sbCodeTokens.append(node.getOperator().toString());
+		this.sbAbbrevTokens.append("PostfixExpression ");
 		return false;
 	}
 
@@ -1382,6 +1445,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(PrefixExpression node) {
 		this.sbCodeTokens.append(node.getOperator().toString());
 		node.getOperand().accept(this);
+		this.sbAbbrevTokens.append("PrefixExpression ");
 		return false;
 	}
 
@@ -1391,6 +1455,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(PrimitiveType node) {
 		visitTypeAnnotations(node);
 		this.sbCodeTokens.append(node.getPrimitiveTypeCode().toString());
+		this.sbAbbrevTokens.append("PrimitiveType ");
 		return false;
 	}
 
@@ -1401,6 +1466,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getQualifier().accept(this);
 		this.sbCodeTokens.append( " . ");//$NON-NLS-1$
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("QualifiedName ");
 		return false;
 	}
 
@@ -1413,6 +1479,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( " . ");//$NON-NLS-1$
 		visitTypeAnnotations(node);
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("QualifiedType ");
 		return false;
 	}
 
@@ -1427,6 +1494,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			node.getExpression().accept(this);
 		}
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ReturnStatement ");
 		return false;
 	}
 
@@ -1435,6 +1503,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(SimpleName node) {
 		this.sbCodeTokens.append( " "+node.getIdentifier());
+		this.sbAbbrevTokens.append("SimpleName ");
 		return false;
 	}
 
@@ -1457,6 +1526,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "( ");//$NON-NLS-1$
 		node.getValue().accept(this);
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("SingleMemberAnnotation ");
 		return false;
 	}
 
@@ -1501,6 +1571,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( "=");//$NON-NLS-1$
 			node.getInitializer().accept(this);
 		}
+		this.sbAbbrevTokens.append("SingleVariableDeclaration ");
 		return false;
 	}
 
@@ -1510,6 +1581,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(StringLiteral node) {
 		String underScoreStr=node.getEscapedValue().replaceAll( "\\s+", "_");
 		this.sbCodeTokens.append( " "+underScoreStr);
+		this.sbAbbrevTokens.append("StringLiteral ");
 		return false;
 	}
 
@@ -1544,6 +1616,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( ") ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("SuperConstructorInvocation ");
 		return false;
 	}
 
@@ -1557,6 +1630,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		}
 		this.sbCodeTokens.append( "super.");//$NON-NLS-1$
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("SuperFieldAccess ");
 		return false;
 	}
 
@@ -1592,6 +1666,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( ")");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("SuperMethodInvocation ");
 		return false;
 	}
 
@@ -1608,6 +1683,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "super");//$NON-NLS-1$
 		visitReferenceTypeArguments(node.typeArguments());
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("SuperMethodReference ");
 		return false;
 	}
 
@@ -1623,6 +1699,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( ":\n");//$NON-NLS-1$
 		}
 		this.indent++; //decremented in visit(SwitchStatement)
+		this.sbAbbrevTokens.append("SwitchCase ");
 		return false;
 	}
 
@@ -1643,6 +1720,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.indent--;
 		printIndent();
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("SwitchStatement ");
 		return false;
 	}
 
@@ -1654,6 +1732,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( ") ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("SynchronizedStatement ");
 		return false;
 	}
 
@@ -1700,6 +1779,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		if (node.isNested()) {
 			this.sbCodeTokens.append( "}");//$NON-NLS-1$
 		}
+		this.sbAbbrevTokens.append("TagElement ");
 		return false;
 	}
 
@@ -1709,6 +1789,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	 */
 	public boolean visit(TextElement node) {
 		this.sbCodeTokens.append(node.getText());
+		this.sbAbbrevTokens.append("TextElement ");
 		return false;
 	}
 
@@ -1721,6 +1802,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( " . ");//$NON-NLS-1$
 		}
 		this.sbCodeTokens.append( "this");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ThisExpression ");
 		return false;
 	}
 
@@ -1732,6 +1814,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.sbCodeTokens.append( "throw ");//$NON-NLS-1$
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("ThrowStatement ");
 		return false;
 	}
 
@@ -1765,6 +1848,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( " finally ");//$NON-NLS-1$
 			node.getFinally().accept(this);
 		}
+		this.sbAbbrevTokens.append("TryStatement ");
 		return false;
 	}
 
@@ -1842,6 +1926,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		this.indent--;
 		printIndent();
 		this.sbCodeTokens.append( "}\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("TypeDeclaration ");
 		return false;
 	}
 
@@ -1855,6 +1940,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		if (node.getAST().apiLevel() >= JLS3) {
 			node.getDeclaration().accept(this);
 		}
+		this.sbAbbrevTokens.append("TypeDeclarationStatement ");
 		return false;
 	}
 
@@ -1864,6 +1950,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 	public boolean visit(TypeLiteral node) {
 		node.getType().accept(this);
 		this.sbCodeTokens.append( ".class");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("TypeLiteral ");
 		return false;
 	}
 
@@ -1876,6 +1963,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getType().accept(this);
 		visitReferenceTypeArguments(node.typeArguments());
 		node.getName().accept(this);
+		this.sbAbbrevTokens.append("(TypeMethodReference ");
 		return false;
 	}
 
@@ -1898,6 +1986,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				}
 			}
 		}
+		this.sbAbbrevTokens.append("TypeParameter ");
 		return false;
 	}
 
@@ -1913,6 +2002,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				this.sbCodeTokens.append('|');
 			}
 		}
+		this.sbAbbrevTokens.append("UnionType ");
 		return false;
 	}
 
@@ -1935,6 +2025,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 				this.sbCodeTokens.append( ", ");//$NON-NLS-1$
 			}
 		}
+		this.sbAbbrevTokens.append("VariableDeclarationExpression ");
 		return false;
 	}
 
@@ -1958,6 +2049,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			this.sbCodeTokens.append( " = ");//$NON-NLS-1$
 			node.getInitializer().accept(this);
 		}
+		this.sbAbbrevTokens.append("VariableDeclarationFragment ");
 		return false;
 	}
 
@@ -1982,6 +2074,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 		}
 		this.sbCodeTokens.append( " ;\n");//$NON-NLS-1$
+		this.sbAbbrevTokens.append("VariableDeclarationStatement ");
 		return false;
 	}
 
@@ -1994,6 +2087,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 		node.getExpression().accept(this);
 		this.sbCodeTokens.append( " ) ");//$NON-NLS-1$
 		node.getBody().accept(this);
+		this.sbAbbrevTokens.append("WhileStatement ");
 		return false;
 	}
 
@@ -2013,6 +2107,7 @@ public class CodeInfoVisitor extends ASTVisitor {
 			}
 			bound.accept(this);
 		}
+		this.sbAbbrevTokens.append("WildcardType ");
 		return false;
 	}
 

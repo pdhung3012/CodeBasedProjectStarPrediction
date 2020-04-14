@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import utils.FileIO;
 import utils.FileUtil;
+import utils.SortUtil;
 import utils.StanfordLemmatizer;
 
 public class CodeInfoGenerator {
@@ -36,6 +37,7 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 	private PrintStream stLocations, stSourceSequences, stTargetSequences, stLog;
 	private HashSet<String> badFiles = new HashSet<>();
 	private String fopInvocationObject;
+	private int number_files_extracted=0;
 //	private String idenHashPath;
 //	private LinkedHashMap<String,String> mapIDAndIden;
 //	private LinkedHashMap<String,Integer> mapIDAppear;
@@ -43,8 +45,9 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 //	private String[] arrPrefix;
 //	private StanfordLemmatizer lemm;
 	
-	public CodeInfoGenerator(String inPath) {
+	public CodeInfoGenerator(String inPath,int number_files) {
 		this.inPath = inPath;
+		this.number_files_extracted=number_files;
 //		this.arrPrefix=arrPrefix;
 //		this.lemm=lemm;
 	}
@@ -74,8 +77,8 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 //		new File(hashIdenPath).mkdirs();
 		try {
 			stLocations = new PrintStream(new FileOutputStream(outPath + "/locations.txt"));
-			stSourceSequences = new PrintStream(new FileOutputStream(outPath + "/source.txt"));
-			stTargetSequences = new PrintStream(new FileOutputStream(outPath + "/target.txt"));
+			stSourceSequences = new PrintStream(new FileOutputStream(outPath + "/ast.txt"));
+			stTargetSequences = new PrintStream(new FileOutputStream(outPath + "/code-abstract.txt"));
 			stLog = new PrintStream(new FileOutputStream(outPath + "/log.txt"));
 		} catch (FileNotFoundException e) {
 			if (testing)
@@ -84,7 +87,8 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 		}
 		int numOfSequences = 0;
 		for (String rootPath : rootPaths) {
-			String[] sourcePaths = getSourcePaths(rootPath, new String[]{".java"});
+			HashMap<String,Integer> mapImportAppears=new HashMap<String, Integer>();
+			String[] sourcePaths = getSourcePathsAndMap(rootPath, new String[]{".java"},number_files_extracted);
 			
 			@SuppressWarnings("rawtypes")
 			Map options = JavaCore.getOptions();
@@ -97,7 +101,7 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 			parser.setResolveBindings(true);
 			parser.setBindingsRecovery(false);
 			
-			AbbreviationInformationASTRequestor r = new AbbreviationInformationASTRequestor();
+			CodeInformationASTRequestor r = new CodeInformationASTRequestor();
 //			mapIDAndIden=new LinkedHashMap<String, String>();
 //			mapIdenAndID=new LinkedHashMap<String, String>();
 //			mapIDAppear=new LinkedHashMap<String, Integer>();
@@ -138,59 +142,11 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 		FileIO.writeStringToFile(sb.toString(), fpFile);
 	}
 	
-	private class AbbreviationInformationASTRequestor extends FileASTRequestor {
+	private class CodeInformationASTRequestor extends FileASTRequestor {
 		int numOfSequences = 0;
-//		private boolean keepUnresolvables;
-//		private String lib;
-//		private String idenPath;
-//		private LinkedHashMap<String,String> mapIDAndIden;
-//		private LinkedHashMap<String,String> mapIdenAndID;
-//		private LinkedHashMap<String,Integer> mapIDAppear;
-//		private String[] arrLibNames;
-//		private StanfordLemmatizer lemm;
-		
-		
-		
-		
-		
-		
-//		public String[] getArrLibNames() {
-//			return arrLibNames;
-//		}
-//
-//		public void setArrLibNames(String[] arrLibNames) {
-//			this.arrLibNames = arrLibNames;
-//		}
-//
-//		public LinkedHashMap<String, Integer> getMapIDAppear() {
-//			return mapIDAppear;
-//		}
-//
-//		public void setMapIDAppear(LinkedHashMap<String, Integer> mapIDAppear) {
-//			this.mapIDAppear = mapIDAppear;
-//		}
-//
-//		public LinkedHashMap<String, String> getMapIDAndIden() {
-//			return mapIDAndIden;
-//		}
-//
-//		public void setMapIDAndIden(LinkedHashMap<String, String> mapIDAndIden) {
-//			this.mapIDAndIden = mapIDAndIden;
-//		}
-//
-//		public LinkedHashMap<String, String> getMapIdenAndID() {
-//			return mapIdenAndID;
-//		}
-//
-//		public void setMapIdenAndID(LinkedHashMap<String, String> mapIdenAndID) {
-//			this.mapIdenAndID = mapIdenAndID;
-//		}
 
-		public AbbreviationInformationASTRequestor() {
-//			this.keepUnresolvables = keepUnresolvables;
-//			this.lib = lib;
-//			this.idenPath=idenPath;
-//			this.lemm=lemm;
+
+		public CodeInformationASTRequestor() {
 		}
 
 		@Override
@@ -365,12 +321,23 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 //		return (String[]) paths.toArray(new String[0]);
 //	}
 
-	private void getSourcePaths(File file, HashSet<String> paths, HashSet<String> exts) {
+	private void getSourcePaths(File file, HashMap<String,Integer> mapImportAppears, HashSet<String> exts) {
 		if (file.isDirectory()) {
 			for (File sub : file.listFiles())
-				getSourcePaths(sub, paths, exts);
-		} else if (exts.contains(getExtension(file.getName())))
-			paths.add(file.getAbsolutePath());
+				getSourcePaths(sub,mapImportAppears, exts);
+		} else if (exts.contains(getExtension(file.getName()))) {
+			String pathItem=file.getAbsolutePath();
+			int numImport=0;
+			String[] arrFileLines=FileIO.readStringFromFile(pathItem).split("\n");
+			for(int i=0;i<arrFileLines.length;i++) {
+				String item=arrFileLines[i].trim();
+				if(item.startsWith("import")) {
+					numImport++;
+				}				
+			}
+			mapImportAppears.put(pathItem,numImport);
+			
+		}
 	}
 
 	private Object getExtension(String name) {
@@ -440,9 +407,9 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 	 * 			numbers[3]: number of non-aligned tokens 
 	 */
 	
-	public int[] generateAlignment(boolean doVerify) {
-		return generateAlignment(outPath, doVerify);
-	}
+//	public int[] generateAlignment(boolean doVerify) {
+//		return generateAlignment(outPath, doVerify);
+//	}
 	
 	/**
 	 * 
@@ -453,72 +420,72 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 	 * 			numbers[2]: number of sequences with non-aligned tokens;
 	 * 			numbers[3]: number of non-aligned tokens 
 	 */
-	public static int[] generateAlignment(String inPath, boolean doVerify) {
-		int[] numbers = new int[]{0, 0, 0, 0};
-		ArrayList<String> sourceSequences = FileUtil.getFileStringArray(inPath + "/source.txt"), 
-				targetSequences = FileUtil.getFileStringArray(inPath + "/target.txt");
-		if (doVerify)
-			if (sourceSequences.size() != targetSequences.size()) {
-				numbers[0]++;
-//				throw new AssertionError("Numbers of source and target sequences are not the same!!!");
-			}
-		File dir = new File(inPath + "-alignment");
-		if (!dir.exists())
-			dir.mkdirs();
-		PrintStream psS2T = null, psT2S = null;
-		try {
-			psS2T = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.s-t.A3"));
-			psT2S = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.t-s.A3"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			if (psS2T != null)
-				psS2T.close();
-			if (psT2S != null)
-				psT2S.close();
-			e.printStackTrace();
-			return null;
-		}
-		for (int i = 0; i < sourceSequences.size(); i++) {
-			String source = sourceSequences.get(i), target = targetSequences.get(i);
-			String[] sTokens = source.trim().split(" "), tTokens = target.trim().split(" ");
-			if (doVerify) {
-				if (sTokens.length != tTokens.length) {
-					numbers[1]++;
-//					throw new AssertionError("Lengths of source and target sequences are not the same!!!");
-				}
-				boolean aligned = true;
-				for (int j = 0; j < sTokens.length; j++) {
-					String s = sTokens[j], t = tTokens[j];
-					if ((t.contains(".") && !t.substring(t.lastIndexOf('.')+1).equals(s.substring(s.lastIndexOf('.')+1))) || (!t.contains(".") && !t.equals(s))) {
-						numbers[3]++;
-						aligned = false;
-//						throw new AssertionError("Source and target are not aligned!!!");
-					}
-				}
-				if (!aligned)
-					numbers[2]++;
-			}
-			String headerS2T = generateHeader(sTokens, tTokens, i), headerT2S = generateHeader(tTokens, sTokens, i);
-			psS2T.println(headerS2T);
-			psT2S.println(headerT2S);
-			psS2T.println(target);
-			psT2S.println(source);
-			String alignmentS2T = generateAlignment(sTokens), alignmentT2S = generateAlignment(tTokens);
-			psS2T.println(alignmentS2T);
-			psT2S.println(alignmentT2S);
-		}
-		psS2T.flush();
-		psT2S.flush();
-		psS2T.close();
-		psT2S.close();
-		if (doVerify) {
-			if (sourceSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.s-t.A3")
-					|| targetSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.t-s.A3"))
-				numbers[0]++;
-		}
-		return numbers;
-	}
-	
+//	public static int[] generateAlignment(String inPath, boolean doVerify) {
+//		int[] numbers = new int[]{0, 0, 0, 0};
+//		ArrayList<String> sourceSequences = FileUtil.getFileStringArray(inPath + "/source.txt"), 
+//				targetSequences = FileUtil.getFileStringArray(inPath + "/target.txt");
+//		if (doVerify)
+//			if (sourceSequences.size() != targetSequences.size()) {
+//				numbers[0]++;
+////				throw new AssertionError("Numbers of source and target sequences are not the same!!!");
+//			}
+//		File dir = new File(inPath + "-alignment");
+//		if (!dir.exists())
+//			dir.mkdirs();
+//		PrintStream psS2T = null, psT2S = null;
+//		try {
+//			psS2T = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.s-t.A3"));
+//			psT2S = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.t-s.A3"));
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			if (psS2T != null)
+//				psS2T.close();
+//			if (psT2S != null)
+//				psT2S.close();
+//			e.printStackTrace();
+//			return null;
+//		}
+//		for (int i = 0; i < sourceSequences.size(); i++) {
+//			String source = sourceSequences.get(i), target = targetSequences.get(i);
+//			String[] sTokens = source.trim().split(" "), tTokens = target.trim().split(" ");
+//			if (doVerify) {
+//				if (sTokens.length != tTokens.length) {
+//					numbers[1]++;
+////					throw new AssertionError("Lengths of source and target sequences are not the same!!!");
+//				}
+//				boolean aligned = true;
+//				for (int j = 0; j < sTokens.length; j++) {
+//					String s = sTokens[j], t = tTokens[j];
+//					if ((t.contains(".") && !t.substring(t.lastIndexOf('.')+1).equals(s.substring(s.lastIndexOf('.')+1))) || (!t.contains(".") && !t.equals(s))) {
+//						numbers[3]++;
+//						aligned = false;
+////						throw new AssertionError("Source and target are not aligned!!!");
+//					}
+//				}
+//				if (!aligned)
+//					numbers[2]++;
+//			}
+//			String headerS2T = generateHeader(sTokens, tTokens, i), headerT2S = generateHeader(tTokens, sTokens, i);
+//			psS2T.println(headerS2T);
+//			psT2S.println(headerT2S);
+//			psS2T.println(target);
+//			psT2S.println(source);
+//			String alignmentS2T = generateAlignment(sTokens), alignmentT2S = generateAlignment(tTokens);
+//			psS2T.println(alignmentS2T);
+//			psT2S.println(alignmentT2S);
+//		}
+//		psS2T.flush();
+//		psT2S.flush();
+//		psS2T.close();
+//		psT2S.close();
+//		if (doVerify) {
+//			if (sourceSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.s-t.A3")
+//					|| targetSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.t-s.A3"))
+//				numbers[0]++;
+//		}
+//		return numbers;
+//	}
+//	
 	/**
 	 * 
 	 * @param inPath
@@ -528,87 +495,87 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 	 * 			numbers[2]: number of sequences with non-aligned tokens;
 	 * 			numbers[3]: number of non-aligned tokens 
 	 */
-	public static int[] generateAlignmentForCrossValidation(String inPath, boolean doVerify) {
-		int[] numbers = new int[]{0, 0, 0, 0};
-		ArrayList<String> sourceSequences = FileUtil.getFileStringArray(inPath + "/train.s"), 
-				targetSequences = FileUtil.getFileStringArray(inPath + "/train.t");
-		if (doVerify)
-			if (sourceSequences.size() != targetSequences.size()) {
-				numbers[0]++;
-//				throw new AssertionError("Numbers of source and target sequences are not the same!!!");
-			}
-		File dir = new File(inPath + "-alignment");
-		if (!dir.exists())
-			dir.mkdirs();
-		PrintStream psS2T = null, psT2S = null;
-		try {
-			psS2T = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.s-t.A3"));
-			psT2S = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.t-s.A3"));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			if (psS2T != null)
-				psS2T.close();
-			if (psT2S != null)
-				psT2S.close();
-			e.printStackTrace();
-			return null;
-		}
-		for (int i = 0; i < sourceSequences.size(); i++) {
-			String source = sourceSequences.get(i), target = targetSequences.get(i);
-			String[] sTokens = source.trim().split(" "), tTokens = target.trim().split(" ");
-			if (doVerify) {
-				if (sTokens.length != tTokens.length) {
-					numbers[1]++;
-//					throw new AssertionError("Lengths of source and target sequences are not the same!!!");
-				}
-				boolean aligned = true;
-				for (int j = 0; j < sTokens.length; j++) {
-					String s = sTokens[j], t = tTokens[j];
-					if ((t.contains(".") && !t.substring(t.lastIndexOf('.')+1).equals(s.substring(s.lastIndexOf('.')+1))) || (!t.contains(".") && !t.equals(s))) {
-						numbers[3]++;
-						aligned = false;
-//						throw new AssertionError("Source and target are not aligned!!!");
-					}
-				}
-				if (!aligned)
-					numbers[2]++;
-			}
-			String headerS2T = generateHeader(sTokens, tTokens, i), headerT2S = generateHeader(tTokens, sTokens, i);
-			psS2T.println(headerS2T);
-			psT2S.println(headerT2S);
-			psS2T.println(target);
-			psT2S.println(source);
-			String alignmentS2T = generateAlignment(sTokens), alignmentT2S = generateAlignment(tTokens);
-			psS2T.println(alignmentS2T);
-			psT2S.println(alignmentT2S);
-		}
-		psS2T.flush();
-		psT2S.flush();
-		psS2T.close();
-		psT2S.close();
-		if (doVerify) {
-			if (sourceSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.s-t.A3")
-					|| targetSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.t-s.A3"))
-				numbers[0]++;
-		}
-		sourceSequences.clear();
-		targetSequences.clear();
-		return numbers;
-	}
+//	public static int[] generateAlignmentForCrossValidation(String inPath, boolean doVerify) {
+//		int[] numbers = new int[]{0, 0, 0, 0};
+//		ArrayList<String> sourceSequences = FileUtil.getFileStringArray(inPath + "/train.s"), 
+//				targetSequences = FileUtil.getFileStringArray(inPath + "/train.t");
+//		if (doVerify)
+//			if (sourceSequences.size() != targetSequences.size()) {
+//				numbers[0]++;
+////				throw new AssertionError("Numbers of source and target sequences are not the same!!!");
+//			}
+//		File dir = new File(inPath + "-alignment");
+//		if (!dir.exists())
+//			dir.mkdirs();
+//		PrintStream psS2T = null, psT2S = null;
+//		try {
+//			psS2T = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.s-t.A3"));
+//			psT2S = new PrintStream(new FileOutputStream(dir.getAbsolutePath() + "/training.t-s.A3"));
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//			if (psS2T != null)
+//				psS2T.close();
+//			if (psT2S != null)
+//				psT2S.close();
+//			e.printStackTrace();
+//			return null;
+//		}
+//		for (int i = 0; i < sourceSequences.size(); i++) {
+//			String source = sourceSequences.get(i), target = targetSequences.get(i);
+//			String[] sTokens = source.trim().split(" "), tTokens = target.trim().split(" ");
+//			if (doVerify) {
+//				if (sTokens.length != tTokens.length) {
+//					numbers[1]++;
+////					throw new AssertionError("Lengths of source and target sequences are not the same!!!");
+//				}
+//				boolean aligned = true;
+//				for (int j = 0; j < sTokens.length; j++) {
+//					String s = sTokens[j], t = tTokens[j];
+//					if ((t.contains(".") && !t.substring(t.lastIndexOf('.')+1).equals(s.substring(s.lastIndexOf('.')+1))) || (!t.contains(".") && !t.equals(s))) {
+//						numbers[3]++;
+//						aligned = false;
+////						throw new AssertionError("Source and target are not aligned!!!");
+//					}
+//				}
+//				if (!aligned)
+//					numbers[2]++;
+//			}
+//			String headerS2T = generateHeader(sTokens, tTokens, i), headerT2S = generateHeader(tTokens, sTokens, i);
+//			psS2T.println(headerS2T);
+//			psT2S.println(headerT2S);
+//			psS2T.println(target);
+//			psT2S.println(source);
+//			String alignmentS2T = generateAlignment(sTokens), alignmentT2S = generateAlignment(tTokens);
+//			psS2T.println(alignmentS2T);
+//			psT2S.println(alignmentT2S);
+//		}
+//		psS2T.flush();
+//		psT2S.flush();
+//		psS2T.close();
+//		psT2S.close();
+//		if (doVerify) {
+//			if (sourceSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.s-t.A3")
+//					|| targetSequences.size()*3 != FileUtil.countNumberOfLines(dir.getAbsolutePath() + "/training.t-s.A3"))
+//				numbers[0]++;
+//		}
+//		sourceSequences.clear();
+//		targetSequences.clear();
+//		return numbers;
+//	}
 	
-	private static String generateAlignment(String[] tokens) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("NULL ({  })");
-		for (int i = 0; i < tokens.length; i++) {
-			String t = tokens[i];
-			sb.append(" " + t + " ({ " + (i+1) + " })");
-		}
-		return sb.toString();
-	}
-
-	private static String generateHeader(String[] sTokens, String[] tTokens, int i) {
-		return "# sentence pair (" + i + ") source length " + sTokens.length + " target length " + tTokens.length + " alignment score : 0";
-	}
+//	private static String generateAlignment(String[] tokens) {
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("NULL ({  })");
+//		for (int i = 0; i < tokens.length; i++) {
+//			String t = tokens[i];
+//			sb.append(" " + t + " ({ " + (i+1) + " })");
+//		}
+//		return sb.toString();
+//	}
+//
+//	private static String generateHeader(String[] sTokens, String[] tTokens, int i) {
+//		return "# sentence pair (" + i + ") source length " + sTokens.length + " target length " + tTokens.length + " alignment score : 0";
+//	}
 	
 	private String getParameters(MethodDeclaration method) {
 		StringBuilder sb = new StringBuilder();
@@ -622,14 +589,38 @@ private static final boolean PARSE_INDIVIDUAL_SRC = false, SCAN_FILES_FRIST = fa
 		return sb.toString();
 	}
 
-	private String[] getSourcePaths(String path, String[] extensions) {
+	private String[] getSourcePathsAndMap(String path, String[] extensions,int number_files) {
 		HashSet<String> exts = new HashSet<>();
 		for (String e : extensions)
 			exts.add(e);
 		HashSet<String> paths = new HashSet<>();
-		getSourcePaths(new File(path), paths, exts);
+		HashMap<String,Integer> mapImports=new HashMap<String, Integer>();
+		getSourcePaths(new File(path), mapImports, exts);
 		paths.removeAll(badFiles);
-		return (String[]) paths.toArray(new String[0]);
+//		String[] arrFiles= (String[]) paths.toArray(new String[0]);
+		
+		mapImports=SortUtil.sortHashMapStringIntByValueDesc(mapImports);
+		
+		ArrayList<String> lstFiles=new ArrayList<String>();
+		
+		int index=0;
+		for(String key :mapImports.keySet()) {
+			index++;
+			if(index>number_files) {
+				break;
+			}
+			lstFiles.add(key);
+		}
+		
+		String[] arrFilters=new String[lstFiles.size()];
+		for(int i=0;i<arrFilters.length;i++) {
+			arrFilters[i]=lstFiles.get(i);
+		}
+		
+		return arrFilters;
+		
+		
+		
 	}
 
 

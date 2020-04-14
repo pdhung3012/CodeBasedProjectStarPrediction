@@ -12,7 +12,7 @@ public class RunTestOnSmallProject {
 		String inPath=PathConstanct.PATH_INPUT_PRO_LOCAL;
 		String outPath=PathConstanct.PATH_OUTPUT_PRO_LOCAL;
 //		StanfordLemmatizer lemm=new StanfordLemmatizer();
-		CodeInfoGenerator mcsg=new CodeInfoGenerator(inPath);
+		CodeInfoGenerator mcsg=new CodeInfoGenerator(inPath,PathConstanct.NumberOfDocsExtracted);
 		mcsg.generateSequences(outPath);
 		mcsg.generateAlignment(true);
 	}

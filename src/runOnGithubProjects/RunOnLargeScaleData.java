@@ -69,13 +69,13 @@ class ExtractSequenceForProjectRunnable implements Runnable {
 		try {
 			
 			File fOut=new File(outputPath);
-			File fSourceOut=new File(outputPath+"source.txt");
+			File fSourceOut=new File(outputPath+"code-abstract.txt");
 			if(fSourceOut.isFile() && fSourceOut.length()>100){
 				System.out.println(index+"\tAlready for " + outputPath);
 				FileIO.appendStringToFile(index+"\t"+fIn.getName()+"\tDownloaded\n", logPath);
 			} else{
 				CodeInfoGenerator mcsg = new CodeInfoGenerator(
-						inputPath);
+						inputPath,PathConstanct.NumberOfDocsExtracted);
 				mcsg.generateSequences(outputPath);
 //				mcsg.generateAlignment(true);
 				System.out.println(index+"\tFinish success for " + outputPath);

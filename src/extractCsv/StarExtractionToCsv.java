@@ -40,7 +40,7 @@ public class StarExtractionToCsv {
 				System.out.println(i+" error: "+ex.getMessage());
 				ex.printStackTrace();
 			}
-			break;
+//			break;
 		}
 		
 		FileIO.writeStringToFile("", fpOutStarTest);
@@ -58,7 +58,7 @@ public class StarExtractionToCsv {
 				System.out.println(i+" error: "+ex.getMessage());
 				ex.printStackTrace();
 			}
-			break;
+//			break;
 		}
 		
 		

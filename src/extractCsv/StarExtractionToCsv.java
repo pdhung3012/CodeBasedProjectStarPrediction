@@ -32,8 +32,8 @@ public class StarExtractionToCsv {
 				String strStarRawData=FileIO.readStringFromFile(fpStarInfo);
 				Object obj = parser.parse(strStarRawData);
 		        JSONObject root = (JSONObject)obj;
-		        JSONObject created_at=(JSONObject)root.get("created_at");
-		        JSONObject star=(JSONObject)root.get("stargazers_count");
+		        String created_at=(String)root.get("created_at");
+		        String star=(String)root.get("stargazers_count");
 		        int starCount=Integer.parseInt(star.toString().trim());
 		        String contentLine=listNameTrain[i]+","+created_at+","+starCount+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutStarTrain);
@@ -47,12 +47,12 @@ public class StarExtractionToCsv {
 		FileIO.writeStringToFile("", fpOutStarTest);
 		for(int i=0;i<listNameTest.length;i++) {
 			try {
-				String fpStarInfo=fopTestData+listNameTrain[i]+".txt";
+				String fpStarInfo=fopTestData+listNameTest[i]+".txt";
 				String strStarRawData=FileIO.readStringFromFile(fpStarInfo);
 				Object obj = parser.parse(strStarRawData);
 		        JSONObject root = (JSONObject)obj;
-		        JSONObject created_at=(JSONObject)root.get("created_at");
-		        JSONObject star=(JSONObject)root.get("stargazers_count");
+		        String created_at=(String)root.get("created_at");
+		        String star=(String)root.get("stargazers_count");
 		        int starCount=Integer.parseInt(star.toString().trim());
 		        String contentLine=listNameTest[i]+","+created_at+","+starCount+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutStarTrain);

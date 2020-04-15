@@ -10,8 +10,8 @@ public class StarExtractionToCsv {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		String fpTrainingProjectList="";
-		String fpTestProjectList="";
+		String fpTrainingProjectList="G:\\gitAlon18Projects\\stars_analytics\\downloaded_train.txt";
+		String fpTestProjectList="G:\\gitAlon18Projects\\stars_analytics\\downloaded_test.txt";
 		
 		String fopTrainingData="G:\\gitAlon18Projects\\stars_analytics\\projectInfos_train\\";
 		String fopTestData="G:\\gitAlon18Projects\\stars_analytics\\projectInfos_test\\";

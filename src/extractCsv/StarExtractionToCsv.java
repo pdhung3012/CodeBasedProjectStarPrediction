@@ -55,7 +55,7 @@ public class StarExtractionToCsv {
 		        String created_at=(String)root.get("created_at");
 		        long starCount=(long)root.get("stargazers_count");
 		        String contentLine=listNameTest[i]+","+created_at+","+starCount+"\n";
-		        FileIO.appendStringToFile(contentLine, fpOutStarTrain);
+		        FileIO.appendStringToFile(contentLine, fpOutStarTest);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());
 				ex.printStackTrace();

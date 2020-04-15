@@ -16,8 +16,8 @@ public class TextExtractionToCsv {
 		String fopTrainingData="G:\\gitAlon18Projects\\starPredictCodeInfos\\";
 		
 		String fopCsvStar="G:\\gitAlon18Projects\\stars_analytics\\csvs\\";
-		String fpOutTextTrain=fopCsvStar+"text_train.csv";
-		String fpOutTextTest=fopCsvStar+"text_test.csv";
+		String fpOutTextTrain=fopCsvStar+"text_train.txt";
+		String fpOutTextTest=fopCsvStar+"text_test.txt";
 		
 		
 		String[] listNameTrain=FileIO.readStringFromFile(fpTrainingProjectList).split("\n");
@@ -29,9 +29,9 @@ public class TextExtractionToCsv {
 			System.out.println("begin "+i);
 			try {
 				String fpASTInfo=fopTrainingData+listNameTrain[i]+"\\ast.txt";
-				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\n", " ").replaceAll(",", " ");
+				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 				String fpCodeInfo=fopTrainingData+listNameTrain[i]+"\\code-abstract.txt";
-				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\n", " ").replaceAll(",", " ");
+				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 		        String contentLine=listNameTrain[i]+","+strAST+","+strCode+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutTextTrain);
 			} catch(Exception ex) {
@@ -46,9 +46,9 @@ public class TextExtractionToCsv {
 			System.out.println("begin "+i);
 			try {
 				String fpASTInfo=fopTrainingData+listNameTest[i]+"\\ast.txt";
-				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\n", " ").replaceAll(",", " ");
+				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 				String fpCodeInfo=fopTrainingData+listNameTest[i]+"\\code-abstract.txt";
-				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\n", " ").replaceAll(",", " ");
+				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 		        String contentLine=listNameTest[i]+","+strAST+","+strCode+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutTextTest);
 			} catch(Exception ex) {

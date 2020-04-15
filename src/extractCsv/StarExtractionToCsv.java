@@ -27,6 +27,7 @@ public class StarExtractionToCsv {
 		
 		FileIO.writeStringToFile("", fpOutStarTrain);
 		for(int i=0;i<listNameTrain.length;i++) {
+			System.out.println("begin "+i);
 			try {
 				String fpStarInfo=fopTrainingData+listNameTrain[i]+".txt";
 				String strStarRawData=FileIO.readStringFromFile(fpStarInfo);
@@ -45,6 +46,7 @@ public class StarExtractionToCsv {
 		
 		FileIO.writeStringToFile("", fpOutStarTest);
 		for(int i=0;i<listNameTest.length;i++) {
+			System.out.println("begin "+i);
 			try {
 				String fpStarInfo=fopTestData+listNameTest[i]+".txt";
 				String strStarRawData=FileIO.readStringFromFile(fpStarInfo);

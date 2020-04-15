@@ -13,12 +13,12 @@ public class StarExtractionToCsv {
 		String fpTrainingProjectList="";
 		String fpTestProjectList="";
 		
-		String fopTrainingData="";
-		String fopTestData="";
+		String fopTrainingData="G:\\gitAlon18Projects\\stars_analytics\\projectInfos_train\\";
+		String fopTestData="G:\\gitAlon18Projects\\stars_analytics\\projectInfos_test\\";
 		
-		String fopCsvStar="";
-		String fpOutStarTrain=fopCsvStar+"";
-		String fpOutStarTest=fopCsvStar+"";
+		String fopCsvStar="G:\\gitAlon18Projects\\stars_analytics\\csvs\\";
+		String fpOutStarTrain=fopCsvStar+"star_train.csv";
+		String fpOutStarTest=fopCsvStar+"star_test.csv";
 		
 		
 		String[] listNameTrain=FileIO.readStringFromFile(fpTrainingProjectList).split("\n");
@@ -35,7 +35,7 @@ public class StarExtractionToCsv {
 		        JSONObject created_at=(JSONObject)root.get("created_at");
 		        JSONObject star=(JSONObject)root.get("stargazers_count");
 		        int starCount=Integer.parseInt(star.toString().trim());
-		        String contentLine=listNameTrain[i]+"\t"+created_at+"\t"+starCount+"\n";
+		        String contentLine=listNameTrain[i]+","+created_at+","+starCount+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutStarTrain);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());
@@ -54,7 +54,7 @@ public class StarExtractionToCsv {
 		        JSONObject created_at=(JSONObject)root.get("created_at");
 		        JSONObject star=(JSONObject)root.get("stargazers_count");
 		        int starCount=Integer.parseInt(star.toString().trim());
-		        String contentLine=listNameTest[i]+"\t"+created_at+"\t"+starCount+"\n";
+		        String contentLine=listNameTest[i]+","+created_at+","+starCount+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutStarTrain);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());

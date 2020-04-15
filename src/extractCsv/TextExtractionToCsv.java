@@ -32,7 +32,7 @@ public class TextExtractionToCsv {
 				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 				String fpCodeInfo=fopTrainingData+listNameTrain[i]+"\\code-abstract.txt";
 				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
-		        String contentLine=listNameTrain[i]+","+strAST+","+strCode+"\n";
+		        String contentLine=listNameTrain[i]+","+strAST+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutTextTrain);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());
@@ -49,7 +49,7 @@ public class TextExtractionToCsv {
 				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 				String fpCodeInfo=fopTrainingData+listNameTest[i]+"\\code-abstract.txt";
 				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
-		        String contentLine=listNameTest[i]+","+strAST+","+strCode+"\n";
+		        String contentLine=listNameTest[i]+","+strAST+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutTextTest);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());

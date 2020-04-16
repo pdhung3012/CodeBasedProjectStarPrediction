@@ -1,0 +1,198 @@
+Result for GaussianNB(priors=None, var_smoothing=1e-09)
+[[12  6  5 69]
+ [ 3  2  4 50]
+ [ 6  6  2 72]
+ [ 7  4  3 53]]
+              precision    recall  f1-score   support
+
+           0       0.43      0.13      0.20        92
+           1       0.11      0.03      0.05        59
+           2       0.14      0.02      0.04        86
+           3       0.22      0.79      0.34        67
+
+    accuracy                           0.23       304
+   macro avg       0.22      0.24      0.16       304
+weighted avg       0.24      0.23      0.16       304
+
+Result for LogisticRegression(C=1.0, class_weight=None, dual=False, fit_intercept=True,
+                   intercept_scaling=1, l1_ratio=None, max_iter=100,
+                   multi_class='auto', n_jobs=None, penalty='l2',
+                   random_state=2, solver='lbfgs', tol=0.0001, verbose=0,
+                   warm_start=False)
+[[41 11 17 23]
+ [21  7 15 16]
+ [35 14 13 24]
+ [17 10 14 26]]
+              precision    recall  f1-score   support
+
+           0       0.36      0.45      0.40        92
+           1       0.17      0.12      0.14        59
+           2       0.22      0.15      0.18        86
+           3       0.29      0.39      0.33        67
+
+    accuracy                           0.29       304
+   macro avg       0.26      0.28      0.26       304
+weighted avg       0.27      0.29      0.27       304
+
+Result for DecisionTreeClassifier(ccp_alpha=0.0, class_weight=None, criterion='gini',
+                       max_depth=None, max_features=None, max_leaf_nodes=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, presort='deprecated',
+                       random_state=None, splitter='best')
+[[21 25 18 28]
+ [16 13 13 17]
+ [22 19 24 21]
+ [22 14 21 10]]
+              precision    recall  f1-score   support
+
+           0       0.26      0.23      0.24        92
+           1       0.18      0.22      0.20        59
+           2       0.32      0.28      0.30        86
+           3       0.13      0.15      0.14        67
+
+    accuracy                           0.22       304
+   macro avg       0.22      0.22      0.22       304
+weighted avg       0.23      0.22      0.23       304
+
+Result for RandomForestClassifier(bootstrap=True, ccp_alpha=0.0, class_weight=None,
+                       criterion='gini', max_depth=None, max_features='auto',
+                       max_leaf_nodes=None, max_samples=None,
+                       min_impurity_decrease=0.0, min_impurity_split=None,
+                       min_samples_leaf=1, min_samples_split=2,
+                       min_weight_fraction_leaf=0.0, n_estimators=50,
+                       n_jobs=None, oob_score=False, random_state=2, verbose=0,
+                       warm_start=False)
+[[28 20 21 23]
+ [16  9 18 16]
+ [24 22 15 25]
+ [25 14 16 12]]
+              precision    recall  f1-score   support
+
+           0       0.30      0.30      0.30        92
+           1       0.14      0.15      0.15        59
+           2       0.21      0.17      0.19        86
+           3       0.16      0.18      0.17        67
+
+    accuracy                           0.21       304
+   macro avg       0.20      0.20      0.20       304
+weighted avg       0.21      0.21      0.21       304
+
+Result for AdaBoostClassifier(algorithm='SAMME.R', base_estimator=None, learning_rate=1.0,
+                   n_estimators=50, random_state=None)
+[[31 25 12 24]
+ [20  7 12 20]
+ [32 18 10 26]
+ [19 14 13 21]]
+              precision    recall  f1-score   support
+
+           0       0.30      0.34      0.32        92
+           1       0.11      0.12      0.11        59
+           2       0.21      0.12      0.15        86
+           3       0.23      0.31      0.27        67
+
+    accuracy                           0.23       304
+   macro avg       0.21      0.22      0.21       304
+weighted avg       0.22      0.23      0.22       304
+
+Result for LinearDiscriminantAnalysis(n_components=None, priors=None, shrinkage=None,
+                           solver='svd', store_covariance=False, tol=0.0001)
+[[44 12 14 22]
+ [12 14 11 22]
+ [31 15 14 26]
+ [23 12 14 18]]
+              precision    recall  f1-score   support
+
+           0       0.40      0.48      0.44        92
+           1       0.26      0.24      0.25        59
+           2       0.26      0.16      0.20        86
+           3       0.20      0.27      0.23        67
+
+    accuracy                           0.30       304
+   macro avg       0.28      0.29      0.28       304
+weighted avg       0.29      0.30      0.29       304
+
+Result for QuadraticDiscriminantAnalysis(priors=None, reg_param=0.0,
+                              store_covariance=False, tol=0.0001)
+[[15  7  7 63]
+ [ 4  1  6 48]
+ [11  3  9 63]
+ [ 2  4  7 54]]
+              precision    recall  f1-score   support
+
+           0       0.47      0.16      0.24        92
+           1       0.07      0.02      0.03        59
+           2       0.31      0.10      0.16        86
+           3       0.24      0.81      0.37        67
+
+    accuracy                           0.26       304
+   macro avg       0.27      0.27      0.20       304
+weighted avg       0.29      0.26      0.20       304
+
+Result for LinearSVC(C=1.0, class_weight=None, dual=True, fit_intercept=True,
+          intercept_scaling=1, loss='squared_hinge', max_iter=1000,
+          multi_class='ovr', penalty='l2', random_state=2, tol=0.0001,
+          verbose=0)
+[[47 11 12 22]
+ [19 10 10 20]
+ [31 15 14 26]
+ [20 10 13 24]]
+              precision    recall  f1-score   support
+
+           0       0.40      0.51      0.45        92
+           1       0.22      0.17      0.19        59
+           2       0.29      0.16      0.21        86
+           3       0.26      0.36      0.30        67
+
+    accuracy                           0.31       304
+   macro avg       0.29      0.30      0.29       304
+weighted avg       0.30      0.31      0.30       304
+
+Result for MLPClassifier(activation='relu', alpha=1, batch_size='auto', beta_1=0.9,
+              beta_2=0.999, early_stopping=False, epsilon=1e-08,
+              hidden_layer_sizes=(100,), learning_rate='constant',
+              learning_rate_init=0.001, max_fun=15000, max_iter=200,
+              momentum=0.9, n_iter_no_change=10, nesterovs_momentum=True,
+              power_t=0.5, random_state=None, shuffle=True, solver='adam',
+              tol=0.0001, validation_fraction=0.1, verbose=False,
+              warm_start=False)
+[[92  0  0  0]
+ [59  0  0  0]
+ [86  0  0  0]
+ [67  0  0  0]]
+              precision    recall  f1-score   support
+
+           0       0.30      1.00      0.46        92
+           1       0.00      0.00      0.00        59
+           2       0.00      0.00      0.00        86
+           3       0.00      0.00      0.00        67
+
+    accuracy                           0.30       304
+   macro avg       0.08      0.25      0.12       304
+weighted avg       0.09      0.30      0.14       304
+
+Result for GradientBoostingClassifier(ccp_alpha=0.0, criterion='friedman_mse', init=None,
+                           learning_rate=0.1, loss='deviance', max_depth=5,
+                           max_features=None, max_leaf_nodes=None,
+                           min_impurity_decrease=0.0, min_impurity_split=None,
+                           min_samples_leaf=1, min_samples_split=2,
+                           min_weight_fraction_leaf=0.0, n_estimators=100,
+                           n_iter_no_change=None, presort='deprecated',
+                           random_state=2, subsample=1.0, tol=0.0001,
+                           validation_fraction=0.1, verbose=0,
+                           warm_start=False)
+[[33 18 21 20]
+ [15 12 17 15]
+ [22 22 16 26]
+ [19  8 14 26]]
+              precision    recall  f1-score   support
+
+           0       0.37      0.36      0.36        92
+           1       0.20      0.20      0.20        59
+           2       0.24      0.19      0.21        86
+           3       0.30      0.39      0.34        67
+
+    accuracy                           0.29       304
+   macro avg       0.28      0.28      0.28       304
+weighted avg       0.28      0.29      0.28       304
+

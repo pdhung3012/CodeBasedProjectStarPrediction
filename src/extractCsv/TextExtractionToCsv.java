@@ -1,5 +1,6 @@
 package extractCsv;
 
+import static java.nio.charset.StandardCharsets.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,23 +25,6 @@ public class TextExtractionToCsv {
 		String[] listNameTest=FileIO.readStringFromFile(fpTestProjectList).split("\n");
 		JSONParser parser = new JSONParser();
 		
-		FileIO.writeStringToFile("", fpOutTextTrain);
-		for(int i=0;i<listNameTrain.length;i++) {
-			System.out.println("begin "+i);
-			try {
-				String fpASTInfo=fopTrainingData+listNameTrain[i]+"\\ast.txt";
-				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
-				String fpCodeInfo=fopTrainingData+listNameTrain[i]+"\\code-abstract.txt";
-				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
-		        String contentLine=listNameTrain[i]+","+strAST+"\n";
-		        FileIO.appendStringToFile(contentLine, fpOutTextTrain);
-			} catch(Exception ex) {
-				System.out.println(i+" error: "+ex.getMessage());
-				ex.printStackTrace();
-			}
-//			break;
-		}
-		
 		FileIO.writeStringToFile("", fpOutTextTest);
 		for(int i=0;i<listNameTest.length;i++) {
 			System.out.println("begin "+i);
@@ -49,7 +33,9 @@ public class TextExtractionToCsv {
 				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
 				String fpCodeInfo=fopTrainingData+listNameTest[i]+"\\code-abstract.txt";
 				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
-		        String contentLine=listNameTest[i]+","+strAST+"\n";
+				byte[] ptext = strCode.getBytes(ISO_8859_1); 
+				strCode = new String(ptext, UTF_8); 
+				String contentLine=listNameTest[i]+","+strAST+","+strCode+"\n";
 		        FileIO.appendStringToFile(contentLine, fpOutTextTest);
 			} catch(Exception ex) {
 				System.out.println(i+" error: "+ex.getMessage());
@@ -57,6 +43,28 @@ public class TextExtractionToCsv {
 			}
 //			break;
 		}
+		
+		FileIO.writeStringToFile("", fpOutTextTrain);
+		for(int i=0;i<listNameTrain.length;i++) {
+			System.out.println("begin "+i);
+			try {
+				String fpASTInfo=fopTrainingData+listNameTrain[i]+"\\ast.txt";
+				String strAST=FileIO.readStringFromFile(fpASTInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
+				String fpCodeInfo=fopTrainingData+listNameTrain[i]+"\\code-abstract.txt";
+				String strCode=FileIO.readStringFromFile(fpCodeInfo).replaceAll("\r\n", " ").replaceAll("\n", " ").replaceAll(";", " ").replaceAll(",", " ").replaceAll("\\s+", " ").trim();
+				byte[] ptext = strCode.getBytes(ISO_8859_1); 
+				strCode = new String(ptext, UTF_8); 
+//				strCode.getBytes("UTF8");
+				String contentLine=listNameTrain[i]+","+strAST+","+strCode+"\n";
+		        FileIO.appendStringToFile(contentLine, fpOutTextTrain);
+			} catch(Exception ex) {
+				System.out.println(i+" error: "+ex.getMessage());
+				ex.printStackTrace();
+			}
+//			break;
+		}
+		
+		
 		
 		
 		

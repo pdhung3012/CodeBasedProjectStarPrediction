@@ -7,7 +7,7 @@ Popularity is one of important metrics of software projects to beevaluated in la
 - Eclipse JDT
 
 # Setup Instructions:
-Note: You need to change the file path specified in the source code. To running the ML model using pretrained vectors only, go to step 3 and 4.
+Note: You need to change the file path specified in the source code. To running the ML model using pretrained vectors only, go to step 3 and 4. To get the input data for step 1 as data set of Java projects, visit this repository from code2vec paper (POPL 2019) https://github.com/tech-srl/code2seq/blob/master/README.md#datasets
 
 1. Parsing AST file:
 - Run src/runOnGithubProjects/RunOnLargeScaleData.java
